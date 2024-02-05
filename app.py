@@ -9,7 +9,9 @@ st.set_page_config(
     initial_sidebar_state="auto",
 )
 
-st.caption(
+st.title("Descartes Underwriting - Data Scientist Technical Test")
+
+st.info(
     """
     This web app is my take for the _Descartes Underwriting - Data Scientist Technical Test_.  
     It was built and deployed with [Streamlit](https://streamlit.io), and primarily uses the following libraries: `pandas`, `sklearn`, `lazypredict`, `matplotlib`.
@@ -18,9 +20,9 @@ st.caption(
     """
 )
 
-st.divider()
+st.caption("GitHub repo: https://github.com/daltunay/descartes-data-sci/")
 
-st.header("Input Data")
+st.header("Input Data", divider="gray")
 
 st.markdown(
     """
@@ -49,7 +51,7 @@ st.markdown(
 """
 )
 
-st.header("Preprocessing")
+st.header("Preprocessing", divider="gray")
 
 processor = DataProcessor()
 
@@ -68,7 +70,7 @@ X_train, X_test, y_train, y_test = processor.split_data(
     stratify_flag=stratify,
 )
 
-st.header("Visualizing Data")
+st.header("Visualizing Data", divider="gray")
 with st.expander("Click to expand", expanded=False):
     cols = st.columns(4)
     X_container = st.container()
@@ -84,7 +86,7 @@ with st.expander("Click to expand", expanded=False):
         cols[1].dataframe(y_train, use_container_width=True)
         cols[0].dataframe(y_train.describe(), use_container_width=True)
 
-st.header("Classification")
+st.header("Classification", divider="gray")
 st.markdown(
     """
     Here, I am using the [`lazypredict`](https://github.com/shankarpandala/lazypredict) package to perform classification.
@@ -96,6 +98,7 @@ if (
         "TRAIN CLASSIFIERS",
         type="primary",
         use_container_width=True,
+        help="might take some time...",
     )
     or "predictor" in st.session_state
 ):
@@ -113,13 +116,15 @@ if (
 
     st.divider()
     model_dict = predictor.provide_models(X_train, X_test, y_train, y_test)
-    st.write("Please select a model to see its specific results:")
+    st.info(
+        "Please select a model to see its evaluation (recommended: `XGBClassifier`)"
+    )
     if selected_model := model_dict.get(
         st.selectbox("Select model", model_dict.keys(), index=None)
     ):
 
-        st.header("Model Results")
-        with st.columns(3)[1]:
+        st.header("Model Results", divider="gray")
+        with st.columns([1, 2, 1])[1]:
             st.subheader("Classification Report")
             try:
                 st.dataframe(
@@ -136,7 +141,7 @@ if (
                     st.pyplot(
                         predictor.get_confusion_matrix(X_test, y_test, selected_model)
                     )
-            except:
+            except Exception as e:
                 st.warning("Not availaible for this model")
         with cols[1]:
             st.subheader("ROC Curve")
@@ -168,3 +173,40 @@ if (
                     )
             except Exception as e:
                 st.warning("Not availaible for this model")
+
+st.subheader("Interpretation", divider="gray")
+st.markdown(
+    """
+    In the end, it appears the XGBClassifier performs pretty well on this task (_ROC AUC_: 0.92).
+    It is important to focus on _precision_ and _recall_ too, especially focusing on class 1 (**ignition**), since it is a binary classification problem.
+
+    - The precision is of 0.67, which means that out of all the positive (ignition) predictions made by the model, 67% of them were correct.  
+    Having a low precision means the customer might pay insurance for "nothing", as no ignition happened, so they lose money.
+
+    - The recall is of 0.53, which means that out of all the positive (ignition) real days, 53% of them were correctly classified as ignition by the model.  
+    Having a low recall means the customer might not pay insurance when they should have, so they lose money.
+
+    In order to find the sweet spot between precision and recall (as we can see on the precision-recall curve), we might need some more data about:
+    - how much money does the customer spend on insurance?
+    - how much money does the customer lose because of ignition days?
+
+    With this data, we could add some weights to classes or build a custom metric, which would more accurately represent the problem.
+    """
+)
+
+st.subheader("Next steps", divider="gray")
+st.markdown(
+    """
+    In order to improve performance, here are some possible next steps:
+    - Do some more feature engineering (maybe considering physics?)
+    - Perform some hyperparameter tuning using Optuna, Hyperopt
+    - Downsample the majority classe (currently representing 85% of the dataset)
+    - Upsample the minority class (although it rarely improves performance)
+    - Try other classification models (although Gradient Boosting is often the best)
+    - Do some dimensionality reduction (via feature selection or PCA, LDA, etc.)
+    - Handle outliers
+    - Use regularization techniques (L1, L2)
+    - Implement cross-validation for better evaluation
+    - etc.
+    """
+)

@@ -12,10 +12,13 @@ import pandas as pd
 from lazypredict.Supervised import LazyClassifier
 import streamlit as st
 from typing import Any
-import numpy as np
 
 
 class ModelPredictor:
+    """
+    Model prediction class
+    """
+
     def __init__(self, random_state: int = 0):
         self.clf = self.initialize_classifier(random_state=random_state)
 
@@ -38,6 +41,9 @@ class ModelPredictor:
         y_train: pd.Series,
         y_test: pd.Series,
     ) -> tuple[pd.DataFrame, pd.DataFrame]:
+        """
+        Perform lazy prediction using several classifiers
+        """
         models, predictions = _self.clf.fit(
             X_train=X_train,
             X_test=X_test,
@@ -57,6 +63,9 @@ class ModelPredictor:
         y_train: pd.Series,
         y_test: pd.Series,
     ) -> dict[str, Any]:
+        """
+        Provide model pipelines from the classifier
+        """
         return _self.clf.provide_models(
             X_train=X_train,
             X_test=X_test,
@@ -67,10 +76,16 @@ class ModelPredictor:
     def get_classification_report(
         self, X_test: pd.DataFrame, y_test: pd.Series, model: Any
     ):
+        """
+        Generate classification report
+        """
         y_pred = model.predict(X_test)
         return pd.DataFrame(classification_report(y_test, y_pred, output_dict=True))
 
     def get_confusion_matrix(self, X_test: pd.DataFrame, y_test: pd.Series, model: Any):
+        """
+        Generate confusion matrix
+        """
         y_pred = model.predict(X_test)
         conf_mat = confusion_matrix(y_test, y_pred)
         fig, ax = plt.subplots()
@@ -87,6 +102,9 @@ class ModelPredictor:
         return fig
 
     def get_roc_curve(self, X_test: pd.DataFrame, y_test: pd.Series, model: Any):
+        """
+        Generate ROC curve
+        """
         y_score = model.predict_proba(X_test)[:, 1]
         fpr, tpr, _ = roc_curve(y_test, y_score)
         roc_auc = auc(fpr, tpr)
@@ -110,6 +128,9 @@ class ModelPredictor:
     def get_precision_recall_curve(
         self, X_test: pd.DataFrame, y_test: pd.Series, model: Any
     ):
+        """
+        Generate precision-recall curve
+        """
         y_score = model.predict_proba(X_test)[:, 1]
         precision, recall, _ = precision_recall_curve(y_test, y_score)
         average_precision = average_precision_score(y_test, y_score)
@@ -126,6 +147,9 @@ class ModelPredictor:
         return fig
 
     def get_feature_importance(self, model: Any, feature_names: list, top_n: int = 20):
+        """
+        Generate feature importance plot
+        """
         importances = model.steps[-1][1].feature_importances_
         feature_importances = dict(zip(feature_names, importances))
         top_features = sorted(

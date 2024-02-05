@@ -17,6 +17,9 @@ TARGET_COL: str = "ignition"
 
 
 class DataProcessor:
+    """
+    Data processing pipeline
+    """
 
     def __init__(self) -> None:
         df = self.load_data()
@@ -30,20 +33,22 @@ class DataProcessor:
 
     @st.cache_data
     def add_date_features(_self, df: pd.DataFrame) -> pd.DataFrame:
+        """
+        Perform feature engineering on Date column
+        """
         df_copy = df.copy()
 
-        start_date = df_copy[DATE_COL].min()
+        df_copy["day"] = df_copy[DATE_COL].dt.day
+        df_copy["day_sin"] = np.sin(2 * np.pi * df_copy["day"] / 12)
 
         df_copy["month"] = df_copy[DATE_COL].dt.month
-        df_copy["day"] = df_copy[DATE_COL].dt.day
-        df_copy["day_of_week"] = df_copy[DATE_COL].dt.dayofweek
-        df_copy["days_since_reference"] = (df_copy[DATE_COL] - start_date).dt.days
         df_copy["month_sin"] = np.sin(2 * np.pi * df_copy["month"] / 12)
-        df_copy["month_cos"] = np.cos(2 * np.pi * df_copy["month"] / 12)
 
-        df_copy.drop(columns=[DATE_COL], inplace=True)
+        df_copy["days_since_reference"] = (
+            df_copy[DATE_COL] - df_copy[DATE_COL].min()
+        ).dt.days
 
-        return df_copy
+        return df_copy.drop(columns=[DATE_COL])
 
     @st.cache_data
     def split_data(
@@ -53,6 +58,9 @@ class DataProcessor:
         shuffle: bool = True,
         stratify_flag: bool = True,
     ) -> tuple[pd.DataFrame, pd.DataFrame, pd.Series, pd.Series]:
+        """
+        Split data into train and test
+        """
         X, y = _self.df.drop(columns=TARGET_COL), _self.df[TARGET_COL]
 
         X_train, X_test, y_train, y_test = train_test_split(

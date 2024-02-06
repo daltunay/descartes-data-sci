@@ -26,4 +26,4 @@
 
 5. Access the Streamlit app in your web browser:
 
-   [localhost:8501](localhost:8501)
+   [localhost:8501](http://localhost:8501/)

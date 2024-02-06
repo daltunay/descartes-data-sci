@@ -1,6 +1,7 @@
 import streamlit as st
-from classification.processing import DataProcessor
+
 from classification.model import ModelPredictor
+from classification.processing import DataProcessor
 
 st.set_page_config(
     page_title="Descartes Underwriting - ALTUNAY Daniel",

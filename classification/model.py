@@ -1,17 +1,18 @@
+from typing import Any
+
 import matplotlib.pyplot as plt
+import pandas as pd
 import seaborn as sns
+import streamlit as st
+from lazypredict.Supervised import LazyClassifier
 from sklearn.metrics import (
+    auc,
+    average_precision_score,
     classification_report,
     confusion_matrix,
-    roc_curve,
-    auc,
     precision_recall_curve,
-    average_precision_score,
+    roc_curve,
 )
-import pandas as pd
-from lazypredict.Supervised import LazyClassifier
-import streamlit as st
-from typing import Any
 
 
 class ModelPredictor:

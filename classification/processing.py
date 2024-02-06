@@ -1,8 +1,9 @@
 import os
+
 import numpy as np
 import pandas as pd
-from sklearn.model_selection import train_test_split
 import streamlit as st
+from sklearn.model_selection import train_test_split
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATAFRAME_FILE_PATH = os.path.join(

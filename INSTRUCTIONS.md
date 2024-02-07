@@ -30,6 +30,8 @@ In order to run the app, you have two possibilities: either with via Docker or p
 
 ## Poetry
 
+Optional: install `poetry` via `pip install poetry`
+
 3. Install dependencies:
 
    ```bash

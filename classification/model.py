@@ -93,7 +93,6 @@ class ModelPredictor:
         sns.heatmap(
             conf_mat,
             annot=True,
-            fmt="d",
             xticklabels=model.classes_,
             yticklabels=model.classes_,
         )

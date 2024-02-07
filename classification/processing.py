@@ -25,6 +25,7 @@ class DataProcessor:
     def __init__(self) -> None:
         df = self.load_data()
         self.df = self.add_date_features(df)
+        self.df = self.remove_constant_features(df)
 
     @st.cache_data
     @staticmethod
@@ -50,6 +51,17 @@ class DataProcessor:
         ).dt.days
 
         return df_copy.drop(columns=[DATE_COL])
+
+    @st.cache_data
+    def remove_constant_features(_self, df: pd.DataFrame) -> pd.DataFrame:
+        """
+        Remove constant features
+        """
+        df_copy = df.copy()
+
+        constant_cols = [col for col in df_copy.columns if df_copy[col].nunique() <= 1]
+
+        return df_copy.drop(columns=constant_cols)
 
     @st.cache_data
     def split_data(

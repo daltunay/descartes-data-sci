@@ -12,6 +12,10 @@
    cd descartes-data-sci
    ```
 
+In order to run the app, you have two possibilities: either with via Docker or poetry.
+
+## Docker
+
 3. Build the Docker image:
 
    ```bash
@@ -23,6 +27,22 @@
    ```bash
    docker run -p 8501:8501 app
    ```
+
+## Poetry
+
+3. Install dependencies:
+
+   ```bash
+   poetry install --no-root
+   ```
+
+4. Run the app:
+
+   ```bash
+   poetry run streamlit run app.py
+   ```
+
+---
 
 5. Access the Streamlit app in your web browser:
 

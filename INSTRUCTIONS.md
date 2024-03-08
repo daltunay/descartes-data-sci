@@ -3,7 +3,7 @@
 1. Clone the repository:
 
    ```bash
-   git clone git@github.com:daltunay/descartes-data-sci.git
+   git clone https://github.com/daltunay/descartes-data-sci.git
    ```
 
 2. Navigate into the cloned repository:
